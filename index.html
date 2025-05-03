@@ -1,39 +1,74 @@
 <!DOCTYPE html>
 <html lang="it">
-<head><meta charset="UTF-8"><title>Invio Dati</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>XD ped - Report Punto Vendita</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    label, select, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
 <body>
-  <h2>📊 Invio Dati Punto Vendita</h2>
-  <form id="form">
-    <label>Punto Vendita:</label><br>
-    <select id="store" required>
-      <option value="">Seleziona...</option>
-      <option value="Fano">Fano</option>
-      <option value="Monsano">Monsano</option>
-      <option value="Osimo">Osimo</option>
-      <option value="Macerata">Macerata</option>
-      <option value="Civitanova">Civitanova</option>
-      <option value="Pesaro">Pesaro</option>
-    </select><br><br>
-    <label>Percentuale:</label><br>
-    <input type="number" id="percent" step="0.1" min="0" max="100" required><br><br>
-    <button type="submit">✅ Invia</button>
-  </form>
-  <p id="response" style="font-weight: bold;"></p>
+
+  <h2>Report: XD ped</h2>
+
+  <label for="store">Punto Vendita</label>
+  <select id="store" required>
+    <option value="" disabled selected>Seleziona il punto vendita</option>
+    <option value="Fano">Fano</option>
+    <option value="Monsano">Monsano</option>
+    <option value="Osimo">Osimo</option>
+    <option value="Macerata">Macerata</option>
+    <option value="Civitanova">Civitanova</option>
+    <option value="Pesaro">Pesaro</option>
+  </select>
+
+  <label for="peso">Peso Xd ped giorno</label>
+  <input type="number" id="peso" placeholder="Inserisci percentuale" required>
+
+  <button onclick="sendEmail()">Invia Mail</button>
 
   <script>
-    document.getElementById("form").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const data = {
-        store: document.getElementById("store").value,
-        percent: document.getElementById("percent").value
-      };
-      const res = await fetch(1ZyfehRuvaCjLKYoXW5SejJGR3eNYY_RaOGTwiCiL4FE , {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-      });
-      document.getElementById("response").textContent = res.ok ? "✅ Inviato!" : "❌ Errore.";
-    });
+    function sendEmail() {
+      const store = document.getElementById('store').value;
+      const peso = document.getElementById('peso').value;
+
+      if (!store || !peso) {
+        alert('Per favore compila tutti i campi.');
+        return;
+      }
+
+      const subject = `XD ped - ${store}`;
+      const body = `📍 Punto Vendita: ${store}%0D%0A📊 Peso Xd ped giorno: ${peso}%25`;
+
+      const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+
+      window.location.href = mailtoLink;
+    }
   </script>
+
 </body>
 </html>
