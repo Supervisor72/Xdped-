@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head><meta charset="UTF-8"><title>Invio Dati</title></head>
+<body>
+  <h2>📊 Invio Dati Punto Vendita</h2>
+  <form id="form">
+    <label>Punto Vendita:</label><br>
+    <select id="store" required>
+      <option value="">Seleziona...</option>
+      <option value="Fano">Fano</option>
+      <option value="Monsano">Monsano</option>
+      <option value="Osimo">Osimo</option>
+      <option value="Macerata">Macerata</option>
+      <option value="Civitanova">Civitanova</option>
+      <option value="Pesaro">Pesaro</option>
+    </select><br><br>
+    <label>Percentuale:</label><br>
+    <input type="number" id="percent" step="0.1" min="0" max="100" required><br><br>
+    <button type="submit">✅ Invia</button>
+  </form>
+  <p id="response" style="font-weight: bold;"></p>
+
+  <script>
+    document.getElementById("form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const data = {
+        store: document.getElementById("store").value,
+        percent: document.getElementById("percent").value
+      };
+      const res = await fetch("https://script.google.com/macros/s/AKfycbwSVKGQkB6rhPWkWNFMgQZGuiQQE98GF4odM-UE5WzXuIJx0pyWWTZr7jCKVSbHPXLUPw/exec, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      });
+      document.getElementById("response").textContent = res.ok ? "✅ Inviato!" : "❌ Errore.";
+    });
+  </script>
+</body>
+</html>
