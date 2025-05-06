@@ -12,30 +12,24 @@
       border: 1px solid #ddd;
       border-radius: 10px;
     }
-    label, select, input {
+    label, select, input, button {
       display: block;
       width: 100%;
       margin-bottom: 20px;
       font-size: 24px;
     }
-    button, .email-button {
-      display: block;
-      width: 100%;
-      margin-bottom: 20px;
-      font-size: 24px;
+    button {
       padding: 30px;
       background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
       border-radius: 20px;
-      text-align: center;
-      text-decoration: none;
     }
-    button:hover, .email-button:hover {
+    button:hover {
       background-color: #45a049;
     }
-    #email-link {
+    .hidden {
       display: none;
     }
   </style>
@@ -44,7 +38,8 @@
 
   <h2> XD Ped Giorno </h2>
 
-  <form id="report-form">
+  <!-- Form semplice con link diretto mailto generato dinamicamente -->
+  <div id="form-container">
     <label for="store">Punto Vendita</label>
     <select id="store" required>
       <option value="" disabled selected>Seleziona il punto vendita</option>
@@ -59,14 +54,22 @@
     <label for="peso">Peso Xd Ped giorno</label>
     <input type="number" id="peso" placeholder="Inserisci percentuale" required>
 
-    <button type="button" onclick="prepareEmail()">Invia Mail</button>
-    
-    <!-- Link alternativo che verrà mostrato se necessario -->
-    <a id="email-link" class="email-button" href="#">Clicca qui per aprire il client email</a>
-  </form>
+    <!-- Form di invio manuale (alternativa) -->
+    <div id="manual-form-info" class="hidden">
+      <p style="font-size: 18px; color: #333; margin: 20px 0;">
+        <strong>Dati per invio manuale:</strong><br>
+        Email: d.pavoni@dml-italia.com<br>
+        <span id="subject-display"></span><br>
+        <span id="body-display"></span>
+      </p>
+    </div>
+
+    <button id="send-button" onclick="generateEmail()">Invia Mail</button>
+    <button id="manual-button" class="hidden" onclick="showManualInfo()">Mostra dati per invio manuale</button>
+  </div>
 
   <script>
-    function prepareEmail() {
+    function generateEmail() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
 
@@ -76,23 +79,32 @@
       }
 
       const subject = `XD Ped - ${store}`;
-      const body = `📍 Punto Vendita: ${store}%0D%0A📊 Peso Xd Ped giorno: ${peso}%25`;
+      const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%`;
 
-      // Metodo 1: Tentativo diretto di apertura
+      // Proviamo diversi metodi per aprire il client email
       try {
-        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-        window.location.href = mailtoLink;
+        // Metodo 1: mailto diretto
+        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink, '_blank');
         
-        // Metodo 2: Fornisci un link di backup se il metodo 1 non funziona
+        // Metodo 2: Mostra il pulsante per informazioni manuali dopo 1 secondo
         setTimeout(function() {
-          const emailLink = document.getElementById('email-link');
-          emailLink.href = mailtoLink;
-          emailLink.style.display = 'block';
-          alert('Se il client email non si è aperto automaticamente, clicca sul pulsante verde sotto.');
-        }, 2000);
-      } catch (error) {
-        alert('Si è verificato un errore: ' + error);
+          document.getElementById('manual-button').classList.remove('hidden');
+          
+          // Prepara i dati per l'invio manuale
+          document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
+          document.getElementById('body-display').textContent = `Messaggio: ${body}`;
+        }, 1000);
+      } 
+      catch (error) {
+        alert('Si è verificato un errore. Usa il pulsante per invio manuale.');
+        document.getElementById('manual-button').classList.remove('hidden');
       }
+    }
+    
+    function showManualInfo() {
+      document.getElementById('manual-form-info').classList.remove('hidden');
+      document.getElementById('manual-button').classList.add('hidden');
     }
   </script>
 
