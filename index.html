@@ -12,22 +12,31 @@
       border: 1px solid #ddd;
       border-radius: 10px;
     }
-    label, select, input, button {
+    label, select, input {
       display: block;
       width: 100%;
       margin-bottom: 20px;
       font-size: 24px;
     }
-    button {
+    button, .email-button {
+      display: block;
+      width: 100%;
+      margin-bottom: 20px;
+      font-size: 24px;
       padding: 30px;
       background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
       border-radius: 20px;
+      text-align: center;
+      text-decoration: none;
     }
-    button:hover {
+    button:hover, .email-button:hover {
       background-color: #45a049;
+    }
+    #email-link {
+      display: none;
     }
   </style>
 </head>
@@ -35,24 +44,29 @@
 
   <h2> XD Ped Giorno </h2>
 
-  <label for="store">Punto Vendita</label>
-  <select id="store" required>
-    <option value="" disabled selected>Seleziona il punto vendita</option>
-    <option value="Fano">Fano</option>
-    <option value="Monsano">Monsano</option>
-    <option value="Osimo">Osimo</option>
-    <option value="Macerata">Macerata</option>
-    <option value="Civitanova">Civitanova</option>
-    <option value="Pesaro">Pesaro</option>
-  </select>
+  <form id="report-form">
+    <label for="store">Punto Vendita</label>
+    <select id="store" required>
+      <option value="" disabled selected>Seleziona il punto vendita</option>
+      <option value="Fano">Fano</option>
+      <option value="Monsano">Monsano</option>
+      <option value="Osimo">Osimo</option>
+      <option value="Macerata">Macerata</option>
+      <option value="Civitanova">Civitanova</option>
+      <option value="Pesaro">Pesaro</option>
+    </select>
 
-  <label for="peso">Peso Xd Ped giorno</label>
-  <input type="number" id="peso" placeholder="Inserisci percentuale" required>
+    <label for="peso">Peso Xd Ped giorno</label>
+    <input type="number" id="peso" placeholder="Inserisci percentuale" required>
 
-  <button onclick="sendEmail()">Invia Mail</button>
+    <button type="button" onclick="prepareEmail()">Invia Mail</button>
+    
+    <!-- Link alternativo che verrà mostrato se necessario -->
+    <a id="email-link" class="email-button" href="#">Clicca qui per aprire il client email</a>
+  </form>
 
   <script>
-    function sendEmail() {
+    function prepareEmail() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
 
@@ -64,12 +78,21 @@
       const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}%0D%0A📊 Peso Xd Ped giorno: ${peso}%25`;
 
-      const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-      
-      // This is the missing line that actually opens the email client
-      window.location.href = mailtoLink;
-      
-      console.log("Email client should open with:", mailtoLink);
+      // Metodo 1: Tentativo diretto di apertura
+      try {
+        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+        window.location.href = mailtoLink;
+        
+        // Metodo 2: Fornisci un link di backup se il metodo 1 non funziona
+        setTimeout(function() {
+          const emailLink = document.getElementById('email-link');
+          emailLink.href = mailtoLink;
+          emailLink.style.display = 'block';
+          alert('Se il client email non si è aperto automaticamente, clicca sul pulsante verde sotto.');
+        }, 2000);
+      } catch (error) {
+        alert('Si è verificato un errore: ' + error);
+      }
     }
   </script>
 
