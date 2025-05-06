@@ -61,12 +61,15 @@
         return;
       }
 
-      const subject = ` XD Ped - ${store}`;
+      const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}%0D%0A📊 Peso Xd Ped giorno: ${peso}%25`;
 
       const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-
+      
+      // This is the missing line that actually opens the email client
       window.location.href = mailtoLink;
+      
+      console.log("Email client should open with:", mailtoLink);
     }
   </script>
 
