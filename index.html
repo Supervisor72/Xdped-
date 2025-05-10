@@ -16,10 +16,10 @@
       display: block;
       width: 100%;
       margin-bottom: 20px;
-      font-size: 24px;
+      font-size: 18px;
     }
     button {
-      padding: 30px;
+      padding: 15px;
       background-color: #4CAF50;
       color: white;
       border: none;
@@ -32,13 +32,16 @@
     .hidden {
       display: none;
     }
+    .error {
+      color: red;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
 
-  <h2> XD Ped Giorno </h2>
+  <h2>XD Ped Giorno</h2>
 
-  <!-- Form semplice con link diretto mailto generato dinamicamente -->
   <div id="form-container">
     <label for="store">Punto Vendita</label>
     <select id="store" required>
@@ -54,32 +57,41 @@
     <label for="peso">Peso Xd Ped giorno</label>
     <input type="number" id="peso" placeholder="Inserisci percentuale" required>
 
-    <!-- Form di invio manuale (alternativa) -->
-    <div id="manual-form-info" class="hidden">
-      <p style="font-size: 18px; color: #333; margin: 20px 0;">
-        <strong>Dati per invio manuale:</strong><br>
-        Email: d.pavoni@dml-italia.com<br>
-        <span id="subject-display"></span><br>
-        <span id="body-display"></span>
-      </p>
-    </div>
+    <label for="venduto">Venduto</label>
+    <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
+
+    <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
 
     <button id="send-button" onclick="generateEmail()">Invia Mail</button>
     <button id="manual-button" class="hidden" onclick="showManualInfo()">Mostra dati per invio manuale</button>
+  </div>
+
+  <div id="manual-form-info" class="hidden">
+    <p style="font-size: 18px; color: #333; margin: 20px 0;">
+      <strong>Dati per invio manuale:</strong><br>
+      Email: d.pavoni@dml-italia.com<br>
+      <span id="subject-display"></span><br>
+      <span id="body-display"></span>
+    </p>
   </div>
 
   <script>
     function generateEmail() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
+      const venduto = document.getElementById('venduto').value;
 
-      if (!store || !peso) {
-        alert('Per favore compila tutti i campi.');
+      // Validazione per percentuali e venduto
+      if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
+        document.getElementById('error-message').classList.remove('hidden');
         return;
       }
+      
+      // Rimuovi messaggio di errore se i campi sono corretti
+      document.getElementById('error-message').classList.add('hidden');
 
       const subject = `XD Ped - ${store}`;
-      const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%`;
+      const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
 
       // Proviamo diversi metodi per aprire il client email
       try {
