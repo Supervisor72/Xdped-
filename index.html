@@ -36,6 +36,17 @@
       color: red;
       font-size: 16px;
     }
+    .message {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .ok {
+      color: green;
+    }
+    .not-ok {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -61,6 +72,9 @@
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
 
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
+
+    <!-- Messaggio di validazione -->
+    <p id="validation-message" class="message hidden"></p>
 
     <button id="send-button" onclick="generateEmail()">Invia Mail</button>
     <button id="manual-button" class="hidden" onclick="showManualInfo()">Mostra dati per invio manuale</button>
@@ -93,24 +107,31 @@
       const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
 
-      // Proviamo diversi metodi per aprire il client email
-      try {
-        // Metodo 1: mailto diretto
-        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.open(mailtoLink, '_blank');
+      // Mostra il messaggio di validazione
+      const validationMessage = document.getElementById('validation-message');
+      if (peso < 15) {
+        validationMessage.textContent = "NON VA BENE";
+        validationMessage.classList.remove('ok');
+        validationMessage.classList.add('not-ok');
+      } else {
+        validationMessage.textContent = "OK!";
+        validationMessage.classList.remove('not-ok');
+        validationMessage.classList.add('ok');
         
-        // Metodo 2: Mostra il pulsante per informazioni manuali dopo 1 secondo
+        // Proviamo a inviare l'email solo se il messaggio è "OK!"
         setTimeout(function() {
-          document.getElementById('manual-button').classList.remove('hidden');
+          const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          window.open(mailtoLink, '_blank');
           
-          // Prepara i dati per l'invio manuale
-          document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
-          document.getElementById('body-display').textContent = `Messaggio: ${body}`;
-        }, 1000);
-      } 
-      catch (error) {
-        alert('Si è verificato un errore. Usa il pulsante per invio manuale.');
-        document.getElementById('manual-button').classList.remove('hidden');
+          // Mostra il pulsante per informazioni manuali dopo 1 secondo
+          setTimeout(function() {
+            document.getElementById('manual-button').classList.remove('hidden');
+            
+            // Prepara i dati per l'invio manuale
+            document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
+            document.getElementById('body-display').textContent = `Messaggio: ${body}`;
+          }, 1000);
+        }, 500); // Delay per dare il tempo di leggere il messaggio
       }
     }
     
