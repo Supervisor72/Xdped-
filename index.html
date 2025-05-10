@@ -36,17 +36,6 @@
       color: red;
       font-size: 16px;
     }
-    .message {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .ok {
-      color: green;
-    }
-    .not-ok {
-      color: red;
-    }
   </style>
 </head>
 <body>
@@ -72,7 +61,6 @@
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
 
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
-    <p id="validation-message" class="message hidden"></p>
 
     <button id="send-button" onclick="generateEmail()">Invia Mail</button>
     <button id="manual-button" class="hidden" onclick="showManualInfo()">Mostra dati per invio manuale</button>
@@ -103,28 +91,14 @@
       const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
 
-      const validationMessage = document.getElementById('validation-message');
+      // Invia subito la mail
+      const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
 
-      if (peso < 15 ) {
-        validationMessage.textContent = "NON VA BENE";
-        validationMessage.classList.remove('ok');
-        validationMessage.classList.add('not-ok');
-        validationMessage.classList.remove('hidden');
-      } else {
-        validationMessage.textContent = "OK!";
-        validationMessage.classList.remove('not-ok');
-        validationMessage.classList.add('ok');
-        validationMessage.classList.remove('hidden');
-
-        // Apertura diretta del link mailto:
-        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-
-        // Mostra i dati per invio manuale
-        document.getElementById('manual-button').classList.remove('hidden');
-        document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
-        document.getElementById('body-display').textContent = `Messaggio: ${body}`;
-      }
+      // Mostra i dati per invio manuale
+      document.getElementById('manual-button').classList.remove('hidden');
+      document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
+      document.getElementById('body-display').textContent = `Messaggio: ${body}`;
     }
 
     function showManualInfo() {
