@@ -72,8 +72,6 @@
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
 
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
-
-    <!-- Messaggio di validazione -->
     <p id="validation-message" class="message hidden"></p>
 
     <button id="send-button" onclick="generateEmail()">Invia Mail</button>
@@ -95,46 +93,40 @@
       const peso = document.getElementById('peso').value;
       const venduto = document.getElementById('venduto').value;
 
-      // Validazione per percentuali e venduto
       if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
         document.getElementById('error-message').classList.remove('hidden');
         return;
       }
-      
-      // Rimuovi messaggio di errore se i campi sono corretti
+
       document.getElementById('error-message').classList.add('hidden');
 
       const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
 
-      // Mostra il messaggio di validazione
       const validationMessage = document.getElementById('validation-message');
+
       if (peso < 15 ) {
         validationMessage.textContent = "NON VA BENE";
         validationMessage.classList.remove('ok');
         validationMessage.classList.add('not-ok');
+        validationMessage.classList.remove('hidden');
       } else {
         validationMessage.textContent = "OK!";
         validationMessage.classList.remove('not-ok');
         validationMessage.classList.add('ok');
-        
-        // Proviamo a inviare l'email solo se il messaggio è "OK!"
-        setTimeout(function() {
-          const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-          window.open(mailtoLink, '_blank');
-          
-          // Mostra il pulsante per informazioni manuali dopo 1 secondo
-          setTimeout(function() {
-            document.getElementById('manual-button').classList.remove('hidden');
-            
-            // Prepara i dati per l'invio manuale
-            document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
-            document.getElementById('body-display').textContent = `Messaggio: ${body}`;
-          }, 1000);
-        }, 500); // Delay per dare il tempo di leggere il messaggio
+        validationMessage.classList.remove('hidden');
+
+        // Apertura diretta del link mailto:
+        const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+
+        // Mostra i dati per invio manuale
+        document.getElementById('manual-button').classList.remove('hidden');
+        document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
+        document.getElementById('body-display').textContent = `Messaggio: ${body}`;
       }
     }
-    
+
     function showManualInfo() {
       document.getElementById('manual-form-info').classList.remove('hidden');
       document.getElementById('manual-button').classList.add('hidden');
