@@ -18,6 +18,11 @@
       margin-bottom: 20px;
       font-size: 18px;
     }
+    select, input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
     button {
       padding: 15px;
       background-color: #4CAF50;
@@ -39,9 +44,7 @@
   </style>
 </head>
 <body>
-
   <h2>XD Ped Giorno</h2>
-
   <div id="form-container">
     <label for="store">Punto Vendita</label>
     <select id="store" required>
@@ -53,19 +56,16 @@
       <option value="Civitanova">Civitanova</option>
       <option value="Pesaro">Pesaro</option>
     </select>
-
     <label for="peso">Peso Xd Ped giorno</label>
     <input type="number" id="peso" placeholder="Inserisci percentuale" required>
-
     <label for="venduto">Venduto</label>
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
-
+    
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
-
     <button id="send-button" onclick="generateEmail()">Invia Mail</button>
+    <button id="telegram-button" style="background-color: #0088cc;" onclick="sendTelegram()">Invia via Telegram</button>
     <button id="manual-button" class="hidden" onclick="showManualInfo()">Mostra dati per invio manuale</button>
   </div>
-
   <div id="manual-form-info" class="hidden">
     <p style="font-size: 18px; color: #333; margin: 20px 0;">
       <strong>Dati per invio manuale:</strong><br>
@@ -74,38 +74,59 @@
       <span id="body-display"></span>
     </p>
   </div>
-
   <script>
     function generateEmail() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
       const venduto = document.getElementById('venduto').value;
-
       if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
         document.getElementById('error-message').classList.remove('hidden');
         return;
       }
-
       document.getElementById('error-message').classList.add('hidden');
-
       const subject = `XD Ped - ${store}`;
       const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
-
       // Invia subito la mail
       const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailtoLink;
-
       // Mostra i dati per invio manuale
       document.getElementById('manual-button').classList.remove('hidden');
       document.getElementById('subject-display').textContent = `Oggetto: ${subject}`;
       document.getElementById('body-display').textContent = `Messaggio: ${body}`;
     }
-
+    
+    function sendTelegram() {
+      const store = document.getElementById('store').value;
+      const peso = document.getElementById('peso').value;
+      const venduto = document.getElementById('venduto').value;
+      
+      if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
+        document.getElementById('error-message').classList.remove('hidden');
+        document.getElementById('error-message').textContent = "Per favore, inserisci valori validi per Punto Vendita, Peso e Venduto.";
+        return;
+      }
+      
+      document.getElementById('error-message').classList.add('hidden');
+      
+      const message = `*XD Ped - ${store}*\n\n📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
+      
+      // Utilizzo diretto dell'ID Telegram
+      const telegramId = "30945887";
+      
+      // Link per aprire la chat con l'ID specifico e messaggio precompilato
+      const telegramLink = `https://t.me/${telegramId}?text=${encodeURIComponent(message)}`;
+      window.open(telegramLink, '_blank');
+      
+      // Mostra anche i dati per invio manuale
+      document.getElementById('manual-button').classList.remove('hidden');
+      document.getElementById('subject-display').textContent = `Oggetto: XD Ped - ${store}`;
+      document.getElementById('body-display').textContent = `Messaggio per Telegram: ${message}`;
+    }
+    
     function showManualInfo() {
       document.getElementById('manual-form-info').classList.remove('hidden');
       document.getElementById('manual-button').classList.add('hidden');
     }
   </script>
-
 </body>
 </html>
