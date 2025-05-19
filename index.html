@@ -34,9 +34,6 @@
     button:hover {
       background-color: #45a049;
     }
-    .hidden {
-      display: none;
-    }
     .error {
       color: red;
       font-size: 16px;
@@ -56,33 +53,59 @@
       <option value="Civitanova">Civitanova</option>
       <option value="Pesaro">Pesaro</option>
     </select>
+
     <label for="peso">Peso Xd Ped giorno</label>
     <input type="number" id="peso" placeholder="Inserisci percentuale" required>
+
     <label for="venduto">Venduto</label>
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
 
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
-    <button id="telegram-button" onclick="openTelegram()">Invia via Telegram</button>
+
+    <button id="send-button" onclick="generateEmail()">Invia Mail</button>
+    <button id="telegram-button" style="background-color: #0088cc;" onclick="sendTelegram()">Invia via Telegram</button>
   </div>
 
   <script>
-    function openTelegram() {
+    function generateEmail() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
       const venduto = document.getElementById('venduto').value;
 
       if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
-        const errMsg = document.getElementById('error-message');
-        errMsg.classList.remove('hidden');
-        errMsg.textContent = "Per favore, inserisci valori validi per Punto Vendita, Peso e Venduto.";
+        document.getElementById('error-message').classList.remove('hidden');
         return;
       }
 
       document.getElementById('error-message').classList.add('hidden');
 
-      const message = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
-      const telegramDeepLink = `tg://msg?text=${encodeURIComponent(message)}`;
-      window.location.href = telegramDeepLink;
+      const subject = `XD Ped - ${store}`;
+      const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
+
+      const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+    }
+
+    function sendTelegram() {
+      const store = document.getElementById('store').value;
+      const peso = document.getElementById('peso').value;
+      const venduto = document.getElementById('venduto').value;
+
+      if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
+        document.getElementById('error-message').classList.remove('hidden');
+        document.getElementById('error-message').textContent = "Per favore, inserisci valori validi per Punto Vendita, Peso e Venduto.";
+        return;
+      }
+
+      document.getElementById('error-message').classList.add('hidden');
+
+      const message = `*XD Ped - ${store}*\n\n📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
+
+      // Inserisci qui il TUO username Telegram pubblico
+      const telegramUsername = "@Ottimista72"; // ← Sostituisci con il tuo vero username (es. DiegoPavoni)
+
+      const telegramLink = `https://t.me/${telegramUsername}?text=${encodeURIComponent(message)}`;
+      window.open(telegramLink, '_blank');
     }
   </script>
 </body>
