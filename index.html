@@ -34,6 +34,9 @@
     button:hover {
       background-color: #45a049;
     }
+    .hidden {
+      display: none;
+    }
     .error {
       color: red;
       font-size: 16px;
@@ -53,39 +56,16 @@
       <option value="Civitanova">Civitanova</option>
       <option value="Pesaro">Pesaro</option>
     </select>
-
     <label for="peso">Peso Xd Ped giorno</label>
     <input type="number" id="peso" placeholder="Inserisci percentuale" required>
-
     <label for="venduto">Venduto</label>
     <input type="number" id="venduto" placeholder="Inserisci valore venduto" required>
 
     <p id="error-message" class="error hidden">Per favore, inserisci valori validi per tutti i campi.</p>
-
-    <button onclick="generateEmail()">Invia Mail</button>
-    <button id="telegram-button" style="background-color: #0088cc;" onclick="openTelegram()">Apri Telegram</button>
+    <button id="telegram-button" onclick="openTelegram()">Invia via Telegram</button>
   </div>
 
   <script>
-    function generateEmail() {
-      const store = document.getElementById('store').value;
-      const peso = document.getElementById('peso').value;
-      const venduto = document.getElementById('venduto').value;
-
-      if (!store || !peso || peso <= 0 || isNaN(peso) || !venduto || venduto <= 0 || isNaN(venduto)) {
-        document.getElementById('error-message').classList.remove('hidden');
-        return;
-      }
-
-      document.getElementById('error-message').classList.add('hidden');
-
-      const subject = `XD Ped - ${store}`;
-      const body = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
-
-      const mailtoLink = `mailto:d.pavoni@dml-italia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
-    }
-
     function openTelegram() {
       const store = document.getElementById('store').value;
       const peso = document.getElementById('peso').value;
@@ -100,10 +80,9 @@
 
       document.getElementById('error-message').classList.add('hidden');
 
-      const message = `*XD Ped - ${store}*\n\n📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
-
-      const telegramUrl = `https://t.me/share/url?text=${encodeURIComponent(message)}`;
-      window.open(telegramUrl, '_blank');
+      const message = `📍 Punto Vendita: ${store}\n📊 Peso Xd Ped giorno: ${peso}%\n💰 Venduto: ${venduto}€`;
+      const telegramDeepLink = `tg://msg?text=${encodeURIComponent(message)}`;
+      window.location.href = telegramDeepLink;
     }
   </script>
 </body>
